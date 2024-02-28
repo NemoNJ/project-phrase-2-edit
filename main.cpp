@@ -26,7 +26,7 @@ string toUpperStr(string);
 void ShowShop(Player);
 void ShowFightPhase();
 string name;
-
+int p = 0, m = 0;//กำหนดค่าเริ่มต้น
 int level;
 char player_action = '\0',BOSS_action = '\0';
 bool changeturn = false;
@@ -100,42 +100,43 @@ while(level > 4){ //วนรับค่า boss
 		ShowFightPhase();	
         //player
         button(player_action,BOSS_action);
-        if(player_action == 'a') p = Player1.attack(); 
+        if(player_action == 'a') p = Player1.playerattack(); 
         
         if(player_action == 'q'){
-            if(Player1.medkit > 0) p = Player1.heal();
+            if(Player1.med > 0) p = Player1.heal();
             else cout << "Emtry\n";
         } 
         if(player_action == 'g'){
-            if(level > 1 && Player1.grenade > 0) p = Player1.usegrenade(boss,boss_id);
+            if(level > 1 && Player1.grenade > 0) p = Player1.playerusegrenade();
             else if(level > 1 && Player1.grenade < 0) cout << "Emtry\n";
             else cout << "Your level is too low\n";
         }
         if(player_action == 'e') break;
         //mons
-		if(level > 0){
-        if(level == 4){
-              BOSS_action = atkboss(BOSS_action);
+		int random_action = (rand()%10+1);
+        if(random_action){
+        if(random_action == 10){
+              BOSS_action = 'b';
         }
         else{
               BOSS_action = 'a';
         }
-        }
-        if(BOSS_action == 'a') m = boss.attack(soilder101,boss_id); 
-        if(BOSS_action == 'b') m = boss.superattack(soilder101,boss_id);
+       }
+        if(BOSS_action == 'a') m = boss.bossattack(); 
+        if(BOSS_action == 'b') m = boss.bossSuperattack(boss.name);
         
-		if(soilder101.playerisDead()){
+		if(Player1.playerisDead()){
 			ShowFightPhase();
 			playerLose();
 			break; 
 		}
 		
-		if(boss.bossisDead())){
+		if(boss.bossisDead()){
 			ShowFightPhase();//อาจแก้เป็นฉากตาย
 			playerWin();
-            if(level == 1) money += (500 + rand()%501);//โอกาสเงิน 2 เท่า
-            if(level == 2) money += (1000 + rand()%1001);//โอกาสเงิน 2 เท่า
-            if(level == 3) money += (1500 + rand()%9501);//โอกาสเกิด jackpot
+            if(level == 1) Player1.money += (500 + rand()%501);//โอกาสเงิน 2 เท่า
+            if(level == 2) Player1.money += (1000 + rand()%1001);//โอกาสเงิน 2 เท่า
+            if(level == 3) Player1.money += (1500 + rand()%9501);//โอกาสเกิด jackpot
             playerWin();
             level++;
             break;
@@ -371,7 +372,7 @@ void ShowMap()
 
 
 void  ShowFightPhase(){
-   if (level == 1 && !Player1.isAK && !Player1.isPistol && Dummy1) {
+   if (level == 1 && !Player1.isAK && !Player1.isPistol) {
            if(Player1.hp < 0)  Player1.hp = 0;
            if(Dummy1.hp < 0) Dummy1.hp = 0;
 //battle sence1
@@ -410,7 +411,7 @@ printf("|                                                                       
 printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
 
    }
-   if (level == 2 && !Player1.isAK && !Player1.isPistol && Dummy2) {
+   if (level == 2 && !Player1.isAK && !Player1.isPistol) {
            if(Player1.hp < 0)  Player1.hp = 0;
            if(Dummy2.hp < 0) Dummy2.hp = 0;
 //battle sence 2-1
@@ -448,7 +449,7 @@ printf("|                                                                       
 printf("|                                                                                                                                                                       |\n");
 printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
    }
-   if (level == 2 && !Player1.isAK && Player1.isPistol && Dummy2) {
+   if (level == 2 && !Player1.isAK && Player1.isPistol) {
     if(Player1.hp < 0)  Player1.hp = 0;
            if(Dummy2.hp < 0) Dummy2.hp = 0;
 //battle sence2-2
@@ -487,7 +488,7 @@ printf("|                                                                       
 printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
 
    }
-   if (level == 3 && !Player1.isAK && Player1.isPistol && Dummy3) {
+   if (level == 3 && !Player1.isAK && Player1.isPistol) {
     if(Player1.hp < 0)  Player1.hp = 0;
            if(Dummy3.hp < 0) Dummy3.hp = 0;
 //battle sence 3-1
@@ -525,7 +526,7 @@ printf("|                                                                       
 printf("|                                                                                                                                                                       |\n");
 printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
    }
-   if (level == 3 && Player1.isAK && Player1.isPistol && Dummy3) {
+   if (level == 3 && Player1.isAK && Player1.isPistol) {
     if(Player1.hp < 0)  Player1.hp = 0;
            if(Dummy3.hp < 0) Dummy3.hp = 0;
 //battle sence 3-2
@@ -563,7 +564,7 @@ printf("|                                                                       
 printf("|                                                                                                                                                                       |\n");
 printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
    }
-   if (level == 4 && !Player1.isAK && Player1.isPistol && Dummy4) {
+   if (level == 4 && !Player1.isAK && Player1.isPistol) {
     if(Player1.hp < 0)  Player1.hp = 0;
            if(Dummy4.hp < 0) Dummy4.hp = 0;
 //battle sence 4-1
@@ -602,7 +603,7 @@ printf("|                                                                       
 printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
    }
 
-   if (level == 4 && Player1.isAK && Player1.isPistol && Dummy4) {
+   if (level == 4 && Player1.isAK && Player1.isPistol) {
     if(Player1.hp < 0)  Player1.hp = 0;
            if(Dummy4.hp < 0) Dummy4.hp = 0;
 //battle sence4-2
@@ -643,8 +644,80 @@ printf("|-----------------------------------------------------------------------
    }
 };
 
+void playerWin(){	
+printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                       |       |       ____                       |             |    _    ___      _                                                   |\n");
+printf("|                                        |     |      |      |    |         |      |             |    |    |  |     |                                                   |\n");
+printf("|                                         |   |      |        |   |         |       |     |     |     |    |   |    |                                                   |\n");
+printf("|                                           |       |          |  |         |        |   | |   |      |    |    |   |                                                   |\n");
+printf("|                                           |        |        |   |         |         | |   | |       |    |     |  |                                                   |\n");
+printf("|                                           |         | ____ |     |_______|           |     |        |    |      |_|                                                   |\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                  ***************************************************************************************                                              |\n");
+printf("|                                  *                   YOU GET MONEY : ____ $   Press [ T ] To Continue                  *                                              |\n");
+printf("|                                  ***************************************************************************************                                              |\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                                                       ---------                                                                                       |\n");
+printf("|                                                                        -.....-                                                                                        |\n");
+printf("|                                                                         .....                                                                                         |\n");
+printf("|                                                                      ...      ...                                                                                     |\n");
+printf("|                                                                     ...          ..                                                                                   |\n");
+printf("|                                                                    ...    |        ..                                                                                 |\n");
+printf("|                                                                  ...    :|:         ..                                                                                |\n");
+printf("|                                                                 ...     : |  :       ..                                                                               |\n");
+printf("|                                                                ...     :  |   :       ...                                                                             |\n");
+printf("|                                                              ...        : |             ..                                                                            |\n");
+printf("|                                                              ..          :|             ..                                                                            |\n");
+printf("|                                                              ..           |:            ..                                                                            |\n");
+printf("|                                                              ...          |  :         ..                                                                             |\n");
+printf("|                                                               ...     :   |   :       ...                                                                             |\n");
+printf("|                                                                ...     :  |  :       ...                                                                              |\n");
+printf("|                                                                  .....   :|:       ....                                                                               |\n");
+printf("|                                                                     ...   |      ....                                                                                 |\n");
+printf("|                                                                       ............                                                                                    |\n");
+printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
+};
 
-void showmap(Unit soilder101){
+
+void playerLose(){
+	// you die
+printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                                                                    ____                                                                               |\n");
+printf("|                                         |       |       ____                      |    |      _      _______                                                          |\n");
+printf("|                                          |     |      |      |    |         |     |     |     |      |                                                                |\n");
+printf("|                                           |   |      |        |   |         |     |      |    |      |                                                                |\n");
+printf("|                                             |       |          |  |         |     |      |    |      |_____                                                           |\n");
+printf("|                                             |        |        |   |         |     |     |     |      |                                                                |\n");
+printf("|                                             |         | ____ |     |_______|      |____|      |      |______                                                          |\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                  ***************************************************************************************                                              |\n");
+printf("|                                  *                          Press [ L ] To Load Your Save                              *                                              |\n");
+printf("|                                  ***************************************************************************************                                              |\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                                                 ..*.*.*.*.*.*.*.*.*..                                                                                 |\n");
+printf("|                                                               **                     **                                                                               |\n");
+printf("|                                                              *                         *                                                                              |\n");
+printf("|                                                            *                             *                                                                            |\n");
+printf("|                                                           *          *          *         *                                                                           |\n");
+printf("|                                                          *         * x *      * x *        *                                                                          |\n");
+printf("|                                                          *         *   *      *   *        *                                                                          |\n");
+printf("|                                                          *..         *          *        ..*                                                                          |\n");
+printf("|                                                           *..                           ..*                                                                           |\n");
+printf("|                                                             *..                       ..*                                                                             |\n");
+printf("|                                                               *..                   ..*                                                                               |\n");
+printf("|                                                                  *..              ..*                                                                                 |\n");
+printf("|                                                                   *   .   .   .   *                                                                                   |\n");
+printf("|                                                                   *   .   .   .   *                                                                                   |\n");
+printf("|                                                                   *   .   .   .   *                                                                                   |\n");
+printf("|                                                                    ***************                                                                                    |\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|                                                                                                                                                                       |\n");
+printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
+};
+void showmap(){
     if (level == 1){
        //map in game stage 1
 printf("|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n");
