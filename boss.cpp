@@ -1,6 +1,7 @@
+#pragma once
 #include <iostream>
 #include <string>
-#include "Player.cpp"
+#include "player.cpp"
 using namespace std;
 class Boss
 {
@@ -47,10 +48,10 @@ int Boss::bossbeAttacked(int oppatk){//ต้องสุ่ม damage ทุก
         return 0;
         }
 }
-int Boss::attack(){
-	return player1.bossbeAttacked(atk);
+int Boss::bossattack(){
+	return bossbeAttacked(atk);
 }
-int Boss::bossbeSuperAttacked(int oppatk,string boss.name) {//ต้องสุ่ม damage ทุกครั้งที่ attack ดาเมจที่น้อยกว่าเกราะจะถูกเพิ่มเป็นเลือดให้บอส
+int Boss::bossbeSuperAttacked(int oppatk,string type) {//ต้องสุ่ม damage ทุกครั้งที่ attack ดาเมจที่น้อยกว่าเกราะจะถูกเพิ่มเป็นเลือดให้บอส
     int super_oppatk = 3 * oppatk;
     if (type == "Dummy1") {
         if(super_oppatk  > def){
@@ -92,5 +93,5 @@ int Boss::bossbeSuperAttacked(int oppatk,string boss.name) {//ต้องสุ
     return 0; // Default case
 }
 int Boss::bossSuperattack(string name){
-	return boss.beSuperAttacked(atk,name);
+	return bossbeSuperAttacked(atk,name);
 }
