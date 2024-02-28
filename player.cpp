@@ -1,4 +1,6 @@
+#pragma once
 #include <iostream>
+#include <string>
 #include <iomanip>
 #include <cstdlib> // เพิ่ม include เพื่อใช้งาน rand()
 #include "Boss.cpp"
@@ -26,6 +28,9 @@ public:
     void GetEnter();
     bool playerisDead();
     bool playernewturn();
+    int playerbeAttacked(int);
+    int playerattack();
+    int playerusegrenade();
     // void attacked(Boss);
     // private:
     string name;
@@ -44,9 +49,6 @@ public:
     bool isPistol;
     bool isAK;
     bool buyphase = false;
-    int playerattack(Boss &,string);
-    int playerbeAttacked(int,string);
-    int playerusegrenade(Boss &,string);
     int heal();
     int HeroATK();
     int HeroDEF();
@@ -280,57 +282,11 @@ bool Player::playerisDead(){
      if(hp > 0) return false;
      else return true;
 }
-void Player::playernewturn(){
+bool Player::playernewturn(){
 	changeturn = false;
 }
- int Player::playerbeAttacked(int oppatk,string type){
-    if (type == "Dummy1") {
-        if(oppatk  > def){
-        oppatk += (rand() % 6);
-        hp = hp - (oppatk - def);
-        return oppatk - def;
-        }
-        else{
-         return 0;
-        }
-    } else if (type == "Dummy2") {
-         if(oppatk  > def){
-        oppatk += (rand() % 11);
-        hp = hp - (oppatk - def);
-        return oppatk - def;
-        }
-        else{
-         return 0;
-        }
-    } else if (type == "Dummy3") {
-         if(oppatk  > def){
-        oppatk += (rand() % 21);
-        hp = hp - (oppatk - def);
-        return oppatk - def;
-       }
-        else{
-         return 0;
-        }
-    } else if (type == "Dummy4") {
-         if(oppatk  > def){
-        oppatk += (rand() % 51);
-        hp = hp - (oppatk - def);
-        return oppatk - def;
-       }
-        else{
-         return 0;
-        }
-    return 0; // Default case
-}
- }
- int Player::playerattack(Boss &boss,string name){
-	return boss.playerbeAttacked(atk,name);
 
- }
-int Player::playerusegrenade(Boss &boss,string name){
-         grenade -= 1;// ใช้ระเบิดแล้ว
-         return  boss.playerbeAttacked(120,name);
-    }
+
 int Player::heal(){//ใช้ med
 if(med > 0){
   int healing;
@@ -349,6 +305,24 @@ if(med > 0){
         return 0;
     }
 }
+int Player::playerbeAttacked(int oppatk){//ต้องสุ่ม damage ทุกครั้งที่ attack
+        if(oppatk  > def){ //แก้bug heal ด้วยเกราะ;
+        oppatk += (rand() % 16);
+        hp = hp - (oppatk - def);
+        return oppatk - def;
+        }
+        else{
+        return 0;
+        }
+}
+int  Player::playerattack(){
+    return playerbeAttacked(atk);
+}
+int  Player::playerusegrenade(){
+    grenade -= 1;
+    return playerbeAttacked(atk);
+}
+
 
 // void Player::attacked(Boss Boss1)
 // {
